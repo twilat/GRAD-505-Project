@@ -13,11 +13,9 @@ nest_visits_df = pd.read_csv('project/dataset_files/checks-20230518.csv')
 ''' Initial Data Analysis '''
 # Show the unique columns and select relevant columns for each question, will add Parasite column later for relevant question
 nest_attempts_df.columns.unique()
-nest_attempts_1 = nest_attempts_df[['Attempt ID', 'Species Code', 'First Lay Date', 'Fledge Date', 'Young Fledged', 'Clutch Size', 'Habitat 1m', 'Substrate']]
-nest_attempts_2 = nest_attempts_df[['Attempt ID', 'Species Code', 'First Lay Date', 'Fledge Date', 'Young Fledged', 'Clutch Size', 'Substrate']]
-nest_attempts_3 = nest_attempts_df[['Attempt ID', 'Species Code', 'First Lay Date', 'Fledge Date', 'Young Fledged', 'Clutch Size']]
-# TODO: don't know if I want to include the dates or not, it might be okay to exclude them?
-
+nest_attempts_1 = nest_attempts_df[['Attempt ID', 'Species Code', 'Young Fledged', 'Clutch Size', 'Habitat 1m', 'Substrate']]
+nest_attempts_2 = nest_attempts_df[['Attempt ID', 'Species Code', 'Young Fledged', 'Clutch Size', 'Substrate']]
+nest_attempts_3 = nest_attempts_df[['Attempt ID', 'Species Code', 'Young Fledged', 'Clutch Size']]
 
 # Function to show counts of data, counts of missing data in the relevant variables for each question
 # See relevant columns and drop rows where there's missing data in the relevant variables
@@ -82,7 +80,6 @@ print(f"There are {species_freq.count()} species after filtering out the nulls, 
 # 2) get only the unique attempt IDs for those
 # 3) join with the nest_attempts_df on attempt ID
 parasites_counted_df = nest_visits_df[nest_visits_df['Brood Parasite Eggs Count'].notnull()]
-# parasites_counted_df = nest_visits_df[nest_visits_df['Brood Parasite Eggs Count'] > 0]
 unique_parasite_eggs_counted_df = parasites_counted_df.drop_duplicates(subset='Attempt ID', ignore_index=True)
 unique_parasites_counted_df = unique_parasite_eggs_counted_df[['Attempt ID', 'Brood Parasite Eggs Count']]
 
@@ -116,7 +113,6 @@ plt.show()
 # 2) get only the unique attempt IDs for those
 # 3) join with the nest_attempts_df on attempt ID
 parasites_counted_df = nest_visits_df[nest_visits_df['Brood Parasite Live Young Count'].notnull()]
-# parasites_counted_df = nest_visits_df[nest_visits_df['Brood Parasite Live Young Count'] > 0]
 unique_parasites_counted_df = parasites_counted_df.drop_duplicates(subset='Attempt ID', ignore_index=True)
 unique_parasites_counted_df = unique_parasites_counted_df[['Attempt ID', 'Brood Parasite Live Young Count']]
 
