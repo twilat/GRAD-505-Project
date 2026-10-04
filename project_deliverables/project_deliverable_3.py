@@ -22,10 +22,6 @@ cleaned_attempts_1 = cleaned_attempts_1.rename(columns={"Habitat 1m": "Habitat",
 Habitat = cleaned_attempts_1['Habitat']
 Young_Fledged = cleaned_attempts_1['Young_Fledged']
 
-# cleaned_attempts_1 = cleaned_attempts_1.rename(columns={"Habitat 1m": "Habitat", "Proportion Fledged": "Proportion_Fledged"})
-# Habitat = cleaned_attempts_1['Habitat']
-# Proportion_Fledged = cleaned_attempts_1['Proportion_Fledged']
-
 # Get dummies for the categorical variable Habitat
 df_1 = pd.get_dummies(cleaned_attempts_1, columns=['Habitat'], drop_first=True) # drop one category to avoid multicollinearity
 cols_1 = df_1.columns.unique()
@@ -39,10 +35,6 @@ for habitat in cols_1[6:]:
 model = ols('Young_Fledged ~ C(Habitat)', data=df_1).fit()
 anova_results = anova_lm(model)
 print(anova_results)
-
-# model = ols('Proportion_Fledged ~ C(Habitat)', data=df_1).fit()
-# anova_results = anova_lm(model)
-# print(anova_results)
 
 '''Verify assumptions for statistical test (ANOVA test)'''
 # Extract residuals and fitted values from the model
@@ -64,7 +56,7 @@ plt.title('Residuals vs Run Order')
 plt.axhline(0, color='red', linestyle='-')
 plt.savefig("Residuals_vs_RunOrder.svg")
 plt.show()
-# Conclusion TODO: There are two outliers, but generally there's random scatter around the 0 line
+# Conclusion TODO: Generally there's random scatter around the 0 line
 
 # Equal variance test: plot residuals vs fitted values
 plt.scatter(fitted, residuals)
@@ -74,7 +66,7 @@ plt.xlabel("Fitted values")
 plt.ylabel("Residuals")
 plt.savefig("Residuals_vs_Fitted.svg")
 plt.show()
-# Conclusion TODO: One outlier but otherwise no funnel shapes
+# Conclusion TODO: Kind of no funnel shapes?
 
 # Final visualizations # TODO
 fig, ax = plt.subplots(figsize=(10, 10))
@@ -85,7 +77,6 @@ boxplot = ax.boxplot(
 )
 ax.set_title("Boxplots of young fledged per habitat")
 plt.show()
-
 
 
 ''' Research question 2: Is there a relationship between the nesting substrates, the host species, and the presence of 
@@ -99,6 +90,7 @@ Statistical test: Multiple regression '''
 # Rename columns without whitespace and save predictor variable
 attempts_with_parasite_count_2 = attempts_with_parasite_count_2.rename(columns={"Species Code": "Species", "Brood Parasite Eggs Count": "Parasite_Eggs"})
 Species = attempts_with_parasite_count_2['Species']
+Substrate = attempts_with_parasite_count_2['Substrate']
 
 # Get dummies for the categorical variable Habitat
 df_2 = pd.get_dummies(attempts_with_parasite_count_2, columns=['Species', 'Substrate'], drop_first=True) # drop one category to avoid multicollinearity
@@ -114,7 +106,7 @@ y = df_2['Parasite_Eggs']   # Response variable
 X = sm.add_constant(X)
 model = sm.OLS(y, X).fit()  # Fit the linear regression model
 
-print(model.summary()) # r stat is 0.042. if just looking at species alone it is 0.028 TODO, and substrate alone is 0.01 TODO
+print(model.summary()) # r stat is 0.042
 
 '''Verify assumptions for statistical test (multiple regression)'''
 # Extract residuals and fitted values from the model
@@ -125,13 +117,13 @@ predictions = model.predict(X)
 sm.qqplot(residuals, line="s")
 plt.title("Q-Q Plot of Residuals")
 plt.show()
-# Conclusion TODO: Pretty normal except for the outliers >?
+# Conclusion TODO: There are a ton of outliers
 
 # Independence test: plot residuals vs run/order
 plt.scatter(df_2.index, residuals)
 plt.xlabel('Run Order')
 plt.ylabel('Residuals')
-plt.title('Residuals vs Run Order')
+plt.title('Run Order vs. Residuals')
 plt.axhline(0, color='red', linestyle='-')
 plt.savefig("Residuals_vs_RunOrder.svg")
 plt.show()
@@ -139,7 +131,7 @@ plt.show()
 
 # Constant variance test: plot predictions vs. residuals
 plt.scatter(predictions, residuals)
-plt.title('Residuals vs Predicted Values')
+plt.title('Predicted Values vs. Residuals')
 plt.xlabel('Predicted Values')
 plt.ylabel('Residuals')
 plt.axhline(y=0, color='r', linestyle='-')
@@ -147,7 +139,22 @@ plt.show()
 # Conclusion TODO: yeah not constant. very one sided
 # probably not the best model to use
 
-# Final visualizations # TODO
+# Final visualizations (scatter plot, data points separated by species, and regression line) # TODO
+plt.scatter(y, residuals)
+plt.title('Actual Values vs Predicted Values')
+plt.xlabel('Predicted Values')
+plt.ylabel('Actual Values')
+plt.axhline(y=0, color='r', linestyle='-')
+plt.show()
+
+
+'''
+df = pd.DataFrame({'Strength': Strength, 'PctHardwood': PctHardwood})
+ax = df.plot(x='PctHardwood', y='Strength', kind="scatter", edgecolor="k")
+abline_plot(model_results=results, ax=ax, color="red")
+plt.title("% Hardwood in Pulp vs. Tensile Strength")
+plt.show()
+'''
 
 
 ''' Research question 3: Does the presence of parasites in the nest have an effect on the final outcome of the nest attempt?
