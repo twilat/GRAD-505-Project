@@ -10,7 +10,7 @@ nest_visits_df = pd.read_csv('../dataset_files/checks-20230518.csv')
 nest_attempts_df = nest_attempts_df[nest_attempts_df['Year'] >= 2020]
 
 # Select relevant columns for each question, will add Parasite column later for relevant question
-nest_attempts_1 = nest_attempts_df[['Attempt ID', 'Species Code', 'Year', 'Young Fledged', 'Clutch Size', 'Habitat 1m', 'Substrate']]
+nest_attempts_1 = nest_attempts_df[['Attempt ID', 'Species Code', 'Year', 'Young Fledged', 'Clutch Size', 'Habitat 1m']]
 nest_attempts_2 = nest_attempts_df[['Attempt ID', 'Species Code', 'Year', 'Young Fledged', 'Clutch Size', 'Substrate']]
 nest_attempts_3 = nest_attempts_df[['Attempt ID', 'Species Code', 'Year', 'Young Fledged', 'Clutch Size']]
 
@@ -32,16 +32,29 @@ def clean_dataset(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 ''' Research Question 1 
 Predictors: habitat, substrate
-Response: proportion fledged '''
-# Clean the data and add Proportion Fledged column
+Response: young fledged '''
+# Clean the data
 cleaned_attempts_1 = clean_dataset(nest_attempts_1)
 cleaned_attempts_1.head()
 cleaned_attempts_1 = cleaned_attempts_1[cleaned_attempts_1['Clutch Size'] > 0] # take out the entries where Clutch Size = 0
-cleaned_attempts_1['Proportion Fledged'] = cleaned_attempts_1['Young Fledged'] / cleaned_attempts_1['Clutch Size']
 
-# There is a notable outlier where 44 young were fledged from a clutch size of 5, yielding a proportion fledged
-# greater than 1. This seems unlikely and possible due to human error from the observer, so we will take it out
-cleaned_attempts_1[cleaned_attempts_1['Proportion_Fledged'] == cleaned_attempts_1['Proportion_Fledged'].max()]
+''' There are a few notable outliers in the young fledged-
+33614   A1443815       purmar  2021           62.0         71.0      grass    poptow
+22109   A1410605       purmar  2020           47.0         48.0      beach    nesbox
+55840   A1614433       easblu  2023           44.0          5.0       golf    nesbox
+15137   A1410608       purmar  2020           42.0         46.0      grass    nesbox
+
+The third one shows an attempt where 44 young were fledged from a clutch size of 5. This seems unlikely and may be due
+to human error from the observer, so we will take it out. We will keep the other attempts where clutch size < young fledged
+because in those cases it's possible that the parasitic birds were also being counted. 44 however is an extreme number that 
+seems pretty unlikely for a single nest in one year.
+
+The other three outliers with a significantly larger clutch size and young fledged than other attempts seem to be unlikely for
+those breeds. For the purmar (purple martin), according to https://www.allaboutbirds.org/guide/Purple_Martin/lifehistory,
+the clutch size can be max 6 eggs, with the number of broods ranging from 1-2. While it's possible that some of the other
+attempts may exceed this maximum, we will take these specific instances out because they are very extreme and skew the data. '''
+cleaned_attempts_1 = cleaned_attempts_1.drop(cleaned_attempts_1[cleaned_attempts_1['Attempt ID']
+                                                                .isin(['A1443815', 'A1410605', 'A1614433', 'A1410608']) == True].index)
 
 ''' Research Question 2 
 Predictors: substrate, host species

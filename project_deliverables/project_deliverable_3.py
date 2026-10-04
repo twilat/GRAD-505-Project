@@ -4,11 +4,11 @@ import statsmodels.api as sm
 from statsmodels.stats.anova import anova_lm
 from statsmodels.formula.api import ols
 from statsmodels.graphics.regressionplots import abline_plot
-from dataset_setup import (
-    cleaned_attempts_1,
-    attempts_with_parasite_count_2, 
-    attempts_with_parasite_count_3
-)
+# from dataset_setup import (
+#     cleaned_attempts_1,
+#     attempts_with_parasite_count_2, 
+#     attempts_with_parasite_count_3
+# )
 
 ''' Research question 1: What is the effect of the nesting conditions on the outcome of the nest attempt?
 H0: The means of young fledged are equal across each habitat. (In other words, the type of habitat has no effect 
@@ -18,22 +18,31 @@ Ha: The means of young fledged are not equal across each habitat.
 Statistical test: ANOVA test'''
 
 '''Perform statistical test (ANOVA test)'''
-cleaned_attempts_1 = cleaned_attempts_1.rename(columns={"Habitat 1m": "Habitat", "Proportion Fledged": "Proportion_Fledged"})
+cleaned_attempts_1 = cleaned_attempts_1.rename(columns={"Habitat 1m": "Habitat", "Young Fledged": "Young_Fledged"})
 Habitat = cleaned_attempts_1['Habitat']
-Proportion_Fledged = cleaned_attempts_1['Proportion_Fledged']
+Young_Fledged = cleaned_attempts_1['Young_Fledged']
+
+# cleaned_attempts_1 = cleaned_attempts_1.rename(columns={"Habitat 1m": "Habitat", "Proportion Fledged": "Proportion_Fledged"})
+# Habitat = cleaned_attempts_1['Habitat']
+# Proportion_Fledged = cleaned_attempts_1['Proportion_Fledged']
 
 # Get dummies for the categorical variable Habitat
 df_1 = pd.get_dummies(cleaned_attempts_1, columns=['Habitat'], drop_first=True) # drop one category to avoid multicollinearity
 cols_1 = df_1.columns.unique()
 
 # Convert dummy variables to 1 and 0
-for habitat in cols_1[7:]:
+for habitat in cols_1[6:]:
+# for habitat in cols_1[7:]:
     df_1[habitat] = df_1[habitat].astype(int)
 
 # Perform ANOVA
-model = ols('Proportion_Fledged ~ C(Habitat)', data=df_1).fit()
+model = ols('Young_Fledged ~ C(Habitat)', data=df_1).fit()
 anova_results = anova_lm(model)
 print(anova_results)
+
+# model = ols('Proportion_Fledged ~ C(Habitat)', data=df_1).fit()
+# anova_results = anova_lm(model)
+# print(anova_results)
 
 '''Verify assumptions for statistical test (ANOVA test)'''
 # Extract residuals and fitted values from the model
@@ -70,11 +79,11 @@ plt.show()
 # Final visualizations # TODO
 fig, ax = plt.subplots(figsize=(10, 10))
 boxplot = ax.boxplot(
-    [group['Proportion_Fledged'] for _, group in cleaned_attempts_1.groupby('Habitat')],
+    [group['Young_Fledged'] for _, group in cleaned_attempts_1.groupby('Habitat')],
     patch_artist=True,
     tick_labels=cleaned_attempts_1['Habitat'].unique()
 )
-ax.set_title("Boxplots of proportion fledged per habitat")
+ax.set_title("Boxplots of young fledged per habitat")
 plt.show()
 
 
