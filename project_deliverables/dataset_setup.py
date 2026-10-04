@@ -1,13 +1,12 @@
 ''' This file is here to make it easier for me to run all the dataset cleans to initialize the datasets before my other work.'''
 
 import pandas as pd
-import matplotlib.pyplot as plt
 
 # read csv into a Pandas dataframe
 nest_attempts_df = pd.read_csv('../dataset_files/attempts_locs-20230518.csv')
 nest_visits_df = pd.read_csv('../dataset_files/checks-20230518.csv')
 
-# Filter data to only include records past 2020
+# Filter data to only include records past and including 2020
 nest_attempts_df = nest_attempts_df[nest_attempts_df['Year'] >= 2020]
 
 # Select relevant columns for each question, will add Parasite column later for relevant question
@@ -39,6 +38,10 @@ cleaned_attempts_1 = clean_dataset(nest_attempts_1)
 cleaned_attempts_1.head()
 cleaned_attempts_1 = cleaned_attempts_1[cleaned_attempts_1['Clutch Size'] > 0] # take out the entries where Clutch Size = 0
 cleaned_attempts_1['Proportion Fledged'] = cleaned_attempts_1['Young Fledged'] / cleaned_attempts_1['Clutch Size']
+
+# There is a notable outlier where 44 young were fledged from a clutch size of 5, yielding a proportion fledged
+# greater than 1. This seems unlikely and possible due to human error from the observer, so we will take it out
+cleaned_attempts_1[cleaned_attempts_1['Proportion_Fledged'] == cleaned_attempts_1['Proportion_Fledged'].max()]
 
 ''' Research Question 2 
 Predictors: substrate, host species
