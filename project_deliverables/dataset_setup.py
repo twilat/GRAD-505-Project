@@ -3,16 +3,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Perform exploratory data analysis
-# Identify any issues that exist with your dataset (e.g. missing or erroneous data)
-# Assess whether your dataset can effectively answer your research questions
-# Create preliminary visualizations addressing your questions
-
 # read csv into a Pandas dataframe
 nest_attempts_df = pd.read_csv('../dataset_files/attempts_locs-20230518.csv')
 nest_visits_df = pd.read_csv('../dataset_files/checks-20230518.csv')
 
-# Show the unique columns and select relevant columns for each question, will add Parasite column later for relevant question
+# Select relevant columns for each question, will add Parasite column later for relevant question
 nest_attempts_1 = nest_attempts_df[['Attempt ID', 'Species Code', 'Young Fledged', 'Clutch Size', 'Habitat 1m', 'Substrate']]
 nest_attempts_2 = nest_attempts_df[['Attempt ID', 'Species Code', 'Young Fledged', 'Clutch Size', 'Substrate']]
 nest_attempts_3 = nest_attempts_df[['Attempt ID', 'Species Code', 'Young Fledged', 'Clutch Size']]
