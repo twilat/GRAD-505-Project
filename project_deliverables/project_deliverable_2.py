@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 # Create preliminary visualizations addressing your questions
 
 # read csv into a Pandas dataframe
-nest_attempts_df = pd.read_csv('project/dataset_files/attempts_locs-20230518.csv')
-nest_visits_df = pd.read_csv('project/dataset_files/checks-20230518.csv')
+nest_attempts_df = pd.read_csv('../dataset_files/attempts_locs-20230518.csv')
+nest_visits_df = pd.read_csv('../dataset_files/checks-20230518.csv')
 
 ''' Initial Data Analysis '''
 # Show the unique columns and select relevant columns for each question, will add Parasite column later for relevant question

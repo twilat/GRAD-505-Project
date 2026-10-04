@@ -1,6 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Set up data first (using code from project deliverable #2)
+cleaned_attempts_1
+cleaned_attempts_2
+cleaned_attempts_3
+
 '''
 Research question 1: What is the effect of the nesting conditions on the outcome of the nest attempt?
 H0: The means of young fledged are equal across each habitat and substrate.
