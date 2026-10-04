@@ -1,5 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from statsmodels.stats.anova import anova_lm
+from statsmodels.formula.api import ols
+import statsmodels.api as sm
 
 # Set up data first (using code from dataset_setup.py). The dataset names are:
 # cleaned_attempts_1
@@ -13,12 +16,53 @@ H0: The means of young fledged are equal across each habitat.
 Statistical tests to conduct:
 - ANOVA test
 '''
-# Verify assumptions (ANOVA)
-# Each sample is random and independent from the others
-# Each population is normally distributed (q-q plot)
-# The standard deviations of the populations are similar
-
 # Perform statistical test
+cleaned_attempts_1 = cleaned_attempts_1.rename(columns={"Habitat 1m": "Habitat", "Proportion Fledged": "Proportion_Fledged"})
+Habitat = cleaned_attempts_1['Habitat']
+Proportion_Fledged = cleaned_attempts_1['Proportion_Fledged']
+
+# Get dummies for the categorical variable Habitat
+df_1 = pd.get_dummies(cleaned_attempts_1, columns=['Habitat'], drop_first=True) # drop one category to avoid multicollinearity
+cols_1 = df_1.columns.unique()
+
+# Convert dummy variables to 1 and 0
+for habitat in cols_1[6:]:
+    df_1[habitat] = df_1[habitat].astype(int)
+
+# Perform ANOVA
+model = ols('Proportion_Fledged ~ C(Habitat)', data=df_1).fit()
+anova_results = anova_lm(model)
+print(anova_results)
+
+# Verify assumptions (ANOVA)
+# Extract residuals and fitted values from our final model
+residuals = model.resid
+fitted = model.fittedvalues
+
+# normality test
+sm.qqplot(residuals, line="s")
+plt.title("Q-Q Plot of ANOVA Residuals")
+plt.show()
+
+# independence test
+# Residuals vs run/order (look for patterns/trends)
+plt.scatter(df_1.index, residuals)
+plt.xlabel('Run Order')
+plt.ylabel('Residuals')
+plt.title('Residuals vs Run Order')
+plt.axhline(0, color='red', linestyle='--')
+plt.savefig("Residuals_vs_RunOrder.svg")
+plt.show()
+
+# equal variance test
+# Residuals vs fitted values (look for “funnel” shapes)
+plt.scatter(fitted, residuals)
+plt.axhline(0, color='red', linestyle="--")
+plt.title("Residuals vs Fitted")
+plt.xlabel("Fitted values")
+plt.ylabel("Residuals")
+plt.savefig("Residuals_vs_Fitted.svg")
+plt.show()
 
 # Final visualizations
 
