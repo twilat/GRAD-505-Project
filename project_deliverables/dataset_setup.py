@@ -7,10 +7,13 @@ import matplotlib.pyplot as plt
 nest_attempts_df = pd.read_csv('../dataset_files/attempts_locs-20230518.csv')
 nest_visits_df = pd.read_csv('../dataset_files/checks-20230518.csv')
 
+# Filter data to only include records past 2020
+nest_attempts_df = nest_attempts_df[nest_attempts_df['Year'] >= 2020]
+
 # Select relevant columns for each question, will add Parasite column later for relevant question
-nest_attempts_1 = nest_attempts_df[['Attempt ID', 'Species Code', 'Young Fledged', 'Clutch Size', 'Habitat 1m', 'Substrate']]
-nest_attempts_2 = nest_attempts_df[['Attempt ID', 'Species Code', 'Young Fledged', 'Clutch Size', 'Substrate']]
-nest_attempts_3 = nest_attempts_df[['Attempt ID', 'Species Code', 'Young Fledged', 'Clutch Size']]
+nest_attempts_1 = nest_attempts_df[['Attempt ID', 'Species Code', 'Year', 'Young Fledged', 'Clutch Size', 'Habitat 1m', 'Substrate']]
+nest_attempts_2 = nest_attempts_df[['Attempt ID', 'Species Code', 'Year', 'Young Fledged', 'Clutch Size', 'Substrate']]
+nest_attempts_3 = nest_attempts_df[['Attempt ID', 'Species Code', 'Year', 'Young Fledged', 'Clutch Size']]
 
 # Function to show counts of data, counts of missing data in the relevant variables for each question
 # See relevant columns and drop rows where there's missing data in the relevant variables
@@ -52,7 +55,7 @@ unique_parasite_eggs_counted_df = parasites_counted_df.drop_duplicates(subset='A
 unique_parasites_counted_df = unique_parasite_eggs_counted_df[['Attempt ID', 'Brood Parasite Eggs Count']]
 
 # joined dataframe
-attempts_with_parasite_count_2 = pd.merge(cleaned_attempts_2, unique_parasite_eggs_counted_df, how='inner', on = 'Attempt ID')
+attempts_with_parasite_count_2 = pd.merge(cleaned_attempts_2, unique_parasites_counted_df, how='inner', on = 'Attempt ID')
 
 ''' Research Question 3'''
 # These results will be slightly different from the other similar ones before since we're filtering out the null data
