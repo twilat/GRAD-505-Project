@@ -139,22 +139,14 @@ plt.show()
 # Conclusion TODO: yeah not constant. very one sided
 # probably not the best model to use
 
+# TODO: this is swapped: The actual-versus-predicted plot is difficult to read and appears to have swapped axes. 
+# With R-squared = .047, I would replace it with mean parasite eggs by substrate and explain the limited fit in words.
 # Final visualizations (scatter plot, data points separated by species, and regression line) # TODO
 plt.scatter(y, residuals)
 plt.title('Actual Values vs Predicted Values')
 plt.xlabel('Predicted Values')
 plt.ylabel('Actual Values')
-plt.axhline(y=0, color='r', linestyle='-')
 plt.show()
-
-
-'''
-df = pd.DataFrame({'Strength': Strength, 'PctHardwood': PctHardwood})
-ax = df.plot(x='PctHardwood', y='Strength', kind="scatter", edgecolor="k")
-abline_plot(model_results=results, ax=ax, color="red")
-plt.title("% Hardwood in Pulp vs. Tensile Strength")
-plt.show()
-'''
 
 
 ''' Research question 3: Does the presence of parasites in the nest have an effect on the final outcome of the nest attempt?
@@ -214,3 +206,5 @@ plt.show()
 # Conclusion TODO: There are lowkey funnel shapes
 
 # Final visualizations TODO
+
+# The last slope interval, .029 to .370, also excludes zero.
