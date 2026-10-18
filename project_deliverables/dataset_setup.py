@@ -2,11 +2,13 @@
 
 # All import statements for all files
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from statsmodels.stats.anova import anova_lm
 from statsmodels.formula.api import ols
 from statsmodels.graphics.regressionplots import abline_plot
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator, MaxNLocator)
 
 # read csv into a Pandas dataframe
 nest_attempts_df = pd.read_csv('dataset_files/attempts_locs-20230518.csv')

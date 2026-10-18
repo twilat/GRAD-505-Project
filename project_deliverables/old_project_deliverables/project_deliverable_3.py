@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator, MaxNLocator)
 import statsmodels.api as sm
 from statsmodels.stats.anova import anova_lm
 from statsmodels.formula.api import ols
@@ -139,15 +140,24 @@ plt.show()
 # Conclusion TODO: yeah not constant. very one sided
 # probably not the best model to use
 
-# TODO: this is swapped: The actual-versus-predicted plot is difficult to read and appears to have swapped axes. 
-# With R-squared = .047, I would replace it with mean parasite eggs by substrate and explain the limited fit in words.
-# Final visualizations (scatter plot, data points separated by species, and regression line) # TODO
-plt.scatter(y, residuals)
-plt.title('Actual Values vs Predicted Values')
-plt.xlabel('Predicted Values')
-plt.ylabel('Actual Values')
+mean_parasite_eggs = [substrate['Parasite_Eggs'].mean() for _, substrate in attempts_with_parasite_count_2.groupby('Substrate')]
+
+plt.scatter(attempts_with_parasite_count_2['Substrate'].unique(), mean_parasite_eggs)
+plt.title('Substrate vs. Mean Parasite Eggs')
+plt.xlabel('Substrate')
+plt.ylabel('Mean Parasite Eggs')
 plt.show()
 
+fig, ax = plt.subplots()
+ax.scatter(species_count, mean_parasite_eggs)
+ax.xaxis.set_major_locator(MultipleLocator(57))
+ax.xaxis.set_major_formatter('{x:.0f}')
+ax.xaxis.set_minor_locator(MultipleLocator())
+ax.set_xlim(0, 172)
+ax.set_title('Species vs. Mean Parasite Eggs')
+ax.set_xlabel('Species Index (Full Names Too Long to Display)')
+ax.set_ylabel('Mean Parasite Eggs')
+plt.show()
 
 ''' Research question 3: Does the presence of parasites in the nest have an effect on the final outcome of the nest attempt?
 H0: There is no correlation between the presence of parasites and the number of young fledged.

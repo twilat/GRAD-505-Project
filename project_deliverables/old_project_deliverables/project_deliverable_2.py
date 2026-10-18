@@ -108,21 +108,6 @@ plt.show()
 # one question but not another. For instance, question 2 filters out null substrate rows, but we keep that data
 # in this question since we are not looking at substrate.
 
-# To incorporate the parasite count variable, we need to:
-# 1) disregard all the rows that don't have a value for Brood Parasite Live Young Count
-# 2) get only the unique attempt IDs for those
-# 3) join with the nest_attempts_df on attempt ID
-parasites_counted_df = nest_visits_df[nest_visits_df['Brood Parasite Live Young Count'].notnull()]
-unique_parasites_counted_df = parasites_counted_df.drop_duplicates(subset='Attempt ID', ignore_index=True)
-unique_parasites_counted_df = unique_parasites_counted_df[['Attempt ID', 'Brood Parasite Live Young Count']]
-
-# joined dataframe
-attempts_with_parasite_count_2 = pd.merge(cleaned_attempts_2, unique_parasites_counted_df, how='inner', on = 'Attempt ID')
-
-# Clean the data and join it with the parasites dataframe
-cleaned_attempts_3 = clean_dataset(nest_attempts_3)
-attempts_with_parasite_count_3 = pd.merge(cleaned_attempts_3, unique_parasites_counted_df, how='inner', on = 'Attempt ID')
-
 # summary table 4, 5
 attempts_with_parasite_count_3['Brood Parasite Live Young Count'].describe()
 attempts_with_parasite_count_3['Young Fledged'].describe()
