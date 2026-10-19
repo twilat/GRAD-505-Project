@@ -27,7 +27,7 @@ def clean_dataset(dataframe: pd.DataFrame) -> pd.DataFrame:
             value_counts = df[column].isnull().value_counts()
             print(f"Missing data for {column}: \n{value_counts}")
             if (True in value_counts):
-                print(f"There are {value_counts[True]} attempts missing data for {column} column")
+                print(f"There are {value_counts[True]} attempts that are missing data for {column} column")
             else:
                 print(f"There is no missing data for {column} column")
             return df[df[column].isnull() == False]
@@ -265,7 +265,7 @@ y = df_2['Parasite_Eggs']   # Response variable
 X = sm.add_constant(X)
 model = sm.OLS(y, X).fit()  # Fit the linear regression model
 
-print(model.summary()) # r stat is 0.042
+print(model.summary()) # r stat is 0.041
 
 '''Verify assumptions for statistical test (multiple regression)'''
 # Extract residuals and fitted values from the model
